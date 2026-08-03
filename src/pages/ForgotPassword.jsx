@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { supabase } from '../supabase'
+import { supabase, SUPABASE_ANON_KEY } from '../supabase'
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('')
@@ -15,17 +15,18 @@ export default function ForgotPassword() {
     setMessageType('')
 
     try {
-      console.log('📤 Sending reset request for:', email)
-
-      // SIMPLEST request - no redirect URL
+      // ✅ FORCE the API key in the request
       const { data, error } = await supabase.auth.resetPasswordForEmail(
         email,
         {
           redirectTo: window.location.origin + '/reset-password',
+        },
+        {
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+          },
         }
       )
-
-      console.log('📥 Response:', { data, error })
 
       if (error) {
         let msg = error.message
@@ -33,8 +34,6 @@ export default function ForgotPassword() {
           msg = 'Too many requests. Please wait a few minutes.'
         } else if (msg.includes('not found')) {
           msg = 'No account found with this email.'
-        } else if (msg.includes('Email not confirmed')) {
-          msg = 'Please verify your email first. Check your inbox!'
         }
         setMessage('❌ ' + msg)
         setMessageType('error')
@@ -48,7 +47,7 @@ export default function ForgotPassword() {
 
     } catch (err) {
       console.error('Error:', err)
-      setMessage('❌ Something went wrong. Please try again.')
+      setMessage('❌ Network error. Please try again.')
       setMessageType('error')
       setLoading(false)
     }

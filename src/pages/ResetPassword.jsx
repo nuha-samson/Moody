@@ -13,42 +13,36 @@ export default function ResetPassword() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const checkResetToken = async () => {
+    const checkSession = async () => {
       setIsChecking(true)
       
       try {
-        // Check URL hash for access token
-        const hash = window.location.hash
-        const params = new URLSearchParams(window.location.search)
-        
-        // Check for error in URL
-        const error = params.get('error')
-        const errorDesc = params.get('error_description')
-        
-        if (error === 'access_denied' || error === 'otp_expired') {
+        // ✅ Get the current session – Supabase handles the token automatically
+        const { data, error } = await supabase.auth.getSession()
+
+        if (error) {
+          console.error('❌ Session error:', error)
           setIsValidToken(false)
-          setMessage('❌ This reset link has expired. Please request a new one.')
+          setMessage('❌ Invalid reset link. Please request a new one.')
           setMessageType('error')
           setIsChecking(false)
           return
         }
 
-        // Check for access_token in hash
-        if (hash && hash.includes('access_token')) {
+        if (data?.session) {
+          console.log('✅ Session found!')
           setIsValidToken(true)
           setMessage('✅ Please enter your new password below.')
           setMessageType('success')
-          setIsChecking(false)
-          return
+        } else {
+          console.log('❌ No session found')
+          setIsValidToken(false)
+          setMessage('❌ No active session. Please request a new reset link.')
+          setMessageType('error')
         }
-
-        // If no token and no error, link is invalid
-        setIsValidToken(false)
-        setMessage('❌ Invalid reset link. Please request a new one.')
-        setMessageType('error')
         
       } catch (err) {
-        console.error('Error checking reset token:', err)
+        console.error('❌ Error:', err)
         setIsValidToken(false)
         setMessage('❌ Something went wrong. Please try again.')
         setMessageType('error')
@@ -57,7 +51,7 @@ export default function ResetPassword() {
       setIsChecking(false)
     }
 
-    checkResetToken()
+    checkSession()
   }, [])
 
   const handleReset = async (e) => {
@@ -66,8 +60,8 @@ export default function ResetPassword() {
     setMessage('')
     setMessageType('')
 
-    if (newPassword.length < 6) {
-      setMessage('🔐 Password must be at least 6 characters long')
+    if (newPassword.length < 8) {
+      setMessage('🔐 Password must be at least 8 characters long')
       setMessageType('error')
       setLoading(false)
       return
@@ -82,26 +76,20 @@ export default function ResetPassword() {
 
     try {
       console.log('🔄 Updating password...')
-
+      
       const { data, error } = await supabase.auth.updateUser({
         password: newPassword
       })
 
-      console.log('📥 Update response:', { data, error })
-
       if (error) {
-        let msg = error.message
-        if (msg.includes('session')) {
-          msg = 'Session expired. Please request a new reset link.'
-        } else if (msg.includes('code verification')) {
-          msg = 'This link has expired. Please request a new one.'
-        }
-        setMessage('❌ ' + msg)
+        console.error('❌ Update error:', error)
+        setMessage('❌ ' + (error.message || 'Something went wrong'))
         setMessageType('error')
         setLoading(false)
         return
       }
 
+      console.log('✅ Password updated!')
       setMessage('✅ Password updated successfully! 🎉')
       setMessageType('success')
       setLoading(false)
@@ -112,7 +100,7 @@ export default function ResetPassword() {
       }, 3000)
 
     } catch (err) {
-      console.error('Error updating password:', err)
+      console.error('❌ Error:', err)
       setMessage('❌ Network error. Please try again.')
       setMessageType('error')
       setLoading(false)
@@ -181,9 +169,9 @@ export default function ResetPassword() {
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="At least 6 characters"
+              placeholder="At least 8 characters"
               required
-              minLength={6}
+              minLength={8}
             />
           </div>
 
