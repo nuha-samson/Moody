@@ -81,7 +81,7 @@ I deployed it on Vercel. It’s live and accessible from any device.
 
 ## 🔗 Links
 
-- Live Demo: [https://moody-tracker.vercel.app](https://moody-tracker.vercel.app)
+- Live Demo: [https://mood-tracker-sigma-rust.vercel.app/](https://mood-tracker-sigma-rust.vercel.app)
 - GitHub: [https://github.com/nuha-samson/Mood-tracker](https://github.com/nuha-samson/Mood-tracker)
 
 ---
