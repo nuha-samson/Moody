@@ -6,26 +6,30 @@ const moodSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
 
     mood: {
       type: String,
-      required: true,
-      enum: [
-        "happy",
-        "sad",
-        "angry",
-        "anxious",
-        "calm",
-        "excited",
-        "neutral",
-      ],
+      required: [true, "Mood is required"],
+      enum: {
+        values: [
+          "happy",
+          "sad",
+          "angry",
+          "anxious",
+          "calm",
+          "excited",
+          "neutral",
+        ],
+        message: "Invalid mood",
+      },
     },
 
     note: {
       type: String,
       trim: true,
-      maxlength: 1000,
+      maxlength: [1000, "Note cannot exceed 1000 characters"],
     },
 
     date: {
@@ -37,6 +41,8 @@ const moodSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+moodSchema.index({ user: 1, date: -1 });
 
 const Mood = mongoose.model("Mood", moodSchema);
 

@@ -1,10 +1,10 @@
 import Mood from "../models/Mood.js";
 
-export const getMoods = async (req, res) => {
+export const getMoods = async (req, res, next) => {
   try {
-    const moods = await Mood.find()
-      .populate("user", "name email")
-      .sort({ date: -1 });
+    const moods = await Mood.find({
+      user: req.user._id,
+    }).sort({ date: -1 });
 
     res.status(200).json({
       success: true,
@@ -12,20 +12,16 @@ export const getMoods = async (req, res) => {
       data: moods,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch moods",
-      error: error.message,
-    });
+    next(error);
   }
 };
 
-export const getMoodById = async (req, res) => {
+export const getMoodById = async (req, res, next) => {
   try {
-    const mood = await Mood.findById(req.params.id).populate(
-      "user",
-      "name email"
-    );
+    const mood = await Mood.findOne({
+      _id: req.params.id,
+      user: req.user._id,
+    });
 
     if (!mood) {
       return res.status(404).json({
@@ -39,27 +35,23 @@ export const getMoodById = async (req, res) => {
       data: mood,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch mood",
-      error: error.message,
-    });
+    next(error);
   }
 };
 
-export const createMood = async (req, res) => {
+export const createMood = async (req, res, next) => {
   try {
-    const { user, mood, note, date } = req.body;
+    const { mood, note, date } = req.body;
 
-    if (!user || !mood) {
+    if (!mood) {
       return res.status(400).json({
         success: false,
-        message: "User and mood are required",
+        message: "Mood is required",
       });
     }
 
     const newMood = await Mood.create({
-      user,
+      user: req.user._id,
       mood,
       note,
       date,
@@ -70,26 +62,31 @@ export const createMood = async (req, res) => {
       data: newMood,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to create mood",
-      error: error.message,
-    });
+    next(error);
   }
 };
 
-export const updateMood = async (req, res) => {
+export const updateMood = async (req, res, next) => {
   try {
-    const mood = await Mood.findByIdAndUpdate(
-      req.params.id,
-      req.body,
+    const { mood, note, date } = req.body;
+
+    const updatedMood = await Mood.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        user: req.user._id,
+      },
+      {
+        mood,
+        note,
+        date,
+      },
       {
         new: true,
         runValidators: true,
       }
     );
 
-    if (!mood) {
+    if (!updatedMood) {
       return res.status(404).json({
         success: false,
         message: "Mood not found",
@@ -98,22 +95,21 @@ export const updateMood = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: mood,
+      data: updatedMood,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to update mood",
-      error: error.message,
-    });
+    next(error);
   }
 };
 
-export const deleteMood = async (req, res) => {
+export const deleteMood = async (req, res, next) => {
   try {
-    const mood = await Mood.findByIdAndDelete(req.params.id);
+    const deletedMood = await Mood.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user._id,
+    });
 
-    if (!mood) {
+    if (!deletedMood) {
       return res.status(404).json({
         success: false,
         message: "Mood not found",
@@ -125,10 +121,6 @@ export const deleteMood = async (req, res) => {
       message: "Mood deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to delete mood",
-      error: error.message,
-    });
+    next(error);
   }
 };

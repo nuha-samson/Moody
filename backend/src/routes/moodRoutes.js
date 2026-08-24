@@ -8,7 +8,11 @@ import {
   deleteMood,
 } from "../controllers/moodController.js";
 
+import protect from "./middleware/authMiddleware.js";
+
 const router = express.Router();
+
+router.use(protect);
 
 router.get("/", getMoods);
 router.get("/:id", getMoodById);
