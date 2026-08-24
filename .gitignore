@@ -1,3 +1,8 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
 # Logs
 logs
 *.log
@@ -22,3 +27,19 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+
+# Build
+dist/
+build/
+
+# Logs
+*.log
+
+# Editor
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
