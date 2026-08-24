@@ -2,6 +2,9 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
+import userRoutes from "./routes/userRoutes.js";
+import moodRoutes from "./routes/moodRoutes.js";
+
 const app = express();
 
 app.use(
@@ -20,5 +23,8 @@ app.get("/api/health", (req, res) => {
     message: "Moody API is running",
   });
 });
+
+app.use("/api/users", userRoutes);
+app.use("/api/moods", moodRoutes);
 
 export default app;
