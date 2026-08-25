@@ -124,3 +124,18 @@ export const deleteMood = async (req, res, next) => {
     next(error);
   }
 };
+export const deleteAllMoods = async (req, res, next) => {
+  try {
+    const result = await Mood.deleteMany({
+      user: req.user._id,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "All moods deleted successfully",
+      deletedCount: result.deletedCount,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
