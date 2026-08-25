@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { api } from "../services/api";
 
-export default function Signup() {
+export default function Signup({ setUser }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [username, setUsername] = useState('')
@@ -19,11 +19,13 @@ export default function Signup() {
   setMessageType("");
 
   try {
-    await api.signup({
-      name: username,
-      email,
-      password,
-    });
+    const response = await api.signup({
+  name: username,
+  email,
+  password,
+});
+
+setUser(response.user);
 
     setMessage("✅ Account created successfully!");
     setMessageType("success");

@@ -1,5 +1,4 @@
 /* ========================================
-   RESET & BASE anon= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2eHh5aGdoY3h0aGZnaHRreGJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1MDAwMTYsImV4cCI6MjEwMTA3NjAxNn0.pdoFsopc_L-koMvO_srji5U21bf-OcTsh8ctqePFcKw
    ======================================== */
 * {
     margin: 0;
@@ -779,4 +778,128 @@ h2 {
     font-size: 0.9rem !important;
     padding: 0.5rem 0;
     line-height: 1.6;
+}
+
+
+/* ========================================
+   HISTORY CRUD ACTIONS
+   ======================================== */
+
+.history-actions {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.history-edit-btn,
+.history-delete-btn,
+.history-edit-save,
+.history-cancel-btn {
+    border: 3px solid #1a1a1a;
+    padding: 0.45rem 0.8rem;
+    font-family: 'Courier New', monospace;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 3px 3px 0 #1a1a1a;
+}
+
+.history-edit-btn {
+    background: #ffde59;
+    color: #1a1a1a;
+}
+
+.history-edit-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 #1a1a1a;
+}
+
+.history-delete-btn {
+    background: #ff6b35;
+    color: #1a1a1a;
+}
+
+.history-delete-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 #1a1a1a;
+}
+
+.history-edit-save {
+    background: #8ef0ce;
+    color: #1a1a1a;
+}
+
+.history-edit-save:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 #1a1a1a;
+}
+
+.history-cancel-btn {
+    background: #fcf9f2;
+    color: #1a1a1a;
+}
+
+.history-cancel-btn:hover {
+    background: #f0ebe3;
+}
+
+.history-edit-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.history-edit-header {
+    color: #ffb81e;
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+}
+
+.history-mood-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.history-mood-option {
+    background: #2a2a32;
+    border: 3px solid #ffb81e;
+    padding: 0.3rem 0.5rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.history-mood-option:hover {
+    transform: scale(1.1);
+    border-color: #8ef0ce;
+}
+
+.history-mood-option.selected {
+    border-color: #8ef0ce;
+    background: #3a3a44;
+    transform: scale(1.1);
+    box-shadow: 3px 3px 0 #8ef0ce;
+}
+
+.history-edit-input {
+    min-height: 120px;
+}
+
+@media (max-width: 600px) {
+    .history-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .history-edit-btn,
+    .history-delete-btn,
+    .history-edit-save,
+    .history-cancel-btn {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.6rem;
+    }
 }

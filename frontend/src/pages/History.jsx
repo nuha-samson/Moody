@@ -1,60 +1,67 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { api } from "../services/api";
-
-const moodEmoji = {
-  happy: "😊",
-  content: "🙂",
-  neutral: "😐",
-  sad: "🙁",
-  "very sad": "😢",
-  excited: "😄",
-  relaxed: "😌",
-  tired: "😫",
-  angry: "😡",
-  overwhelmed: "🤯",
-};
-
-const moods = [
-  "happy",
-  "content",
-  "neutral",
-  "sad",
-  "very sad",
-  "excited",
-  "relaxed",
-  "tired",
-  "angry",
-  "overwhelmed",
-];
 
 export default function History() {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState("");
 
   const [editingId, setEditingId] = useState(null);
   const [editMood, setEditMood] = useState("");
   const [editNote, setEditNote] = useState("");
   const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const loadEntries = async () => {
-    try {
-      setLoading(true);
+  const moods = [
+    { emoji: "😊", label: "Happy", value: "happy" },
+    { emoji: "🙂", label: "Content", value: "content" },
+    { emoji: "😐", label: "Neutral", value: "neutral" },
+    { emoji: "🙁", label: "Sad", value: "sad" },
+    { emoji: "😢", label: "Very Sad", value: "very sad" },
+    { emoji: "😄", label: "Excited", value: "excited" },
+    { emoji: "😌", label: "Relaxed", value: "relaxed" },
+    { emoji: "😫", label: "Tired", value: "tired" },
+    { emoji: "😡", label: "Angry", value: "angry" },
+    { emoji: "🤯", label: "Overwhelmed", value: "overwhelmed" },
+  ];
 
-      const response = await api.getMoods();
-
-      setEntries(response.data || []);
-      setMessage("");
-    } catch (error) {
-      console.error("Failed to load moods:", error);
-      setMessage(error.message || "Could not load your entries.");
-    } finally {
-      setLoading(false);
-    }
+  const moodEmoji = {
+    happy: "😊",
+    content: "🙂",
+    neutral: "😐",
+    sad: "🙁",
+    "very sad": "😢",
+    excited: "😄",
+    relaxed: "😌",
+    tired: "😫",
+    angry: "😡",
+    overwhelmed: "🤯",
   };
 
   useEffect(() => {
-    loadEntries();
+    let isActive = true;
+
+    const fetchEntries = async () => {
+      try {
+        const response = await api.getMoods();
+
+        if (isActive) {
+          setEntries(response.data || []);
+        }
+      } catch (error) {
+        console.error("Error loading entries:", error);
+        setMessage(`❌ ${error.message}`);
+      } finally {
+        if (isActive) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchEntries();
+
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   const startEditing = (entry) => {
@@ -72,7 +79,12 @@ export default function History() {
 
   const saveEdit = async (id) => {
     if (!editMood) {
-      setMessage("Please select a mood.");
+      setMessage("😅 Pick a mood first!");
+      return;
+    }
+
+    if (!editNote.trim()) {
+      setMessage("✍️ Write something!");
       return;
     }
 
@@ -82,7 +94,7 @@ export default function History() {
     try {
       const response = await api.updateMood(id, {
         mood: editMood,
-        note: editNote,
+        note: editNote.trim(),
       });
 
       setEntries((currentEntries) =>
@@ -91,22 +103,19 @@ export default function History() {
         )
       );
 
+      setMessage("✅ Entry updated successfully!");
       cancelEditing();
-      setMessage("✅ Entry updated successfully.");
     } catch (error) {
-      console.error("Failed to update mood:", error);
-      setMessage(error.message || "Could not update the entry.");
+      setMessage(`❌ ${error.message}`);
     } finally {
       setSaving(false);
     }
   };
 
   const deleteEntry = async (id) => {
-    const confirmed = window.confirm(
-      "Delete this journal entry? This cannot be undone."
-    );
-
-    if (!confirmed) return;
+    if (!window.confirm("Delete this journal entry? This cannot be undone.")) {
+      return;
+    }
 
     try {
       await api.deleteMood(id);
@@ -115,152 +124,129 @@ export default function History() {
         currentEntries.filter((entry) => entry._id !== id)
       );
 
-      setMessage("🗑️ Entry deleted.");
+      setMessage("🗑️ Entry deleted!");
     } catch (error) {
-      console.error("Failed to delete mood:", error);
-      setMessage(error.message || "Could not delete the entry.");
+      setMessage(`❌ ${error.message}`);
     }
   };
-
-  if (loading) {
-    return (
-      <section
-        id="history"
-        style={{ marginTop: "2rem", textAlign: "center", padding: "3rem" }}
-      >
-        <h2>⏳ Loading your entries...</h2>
-      </section>
-    );
-  }
 
   return (
     <section id="history" style={{ marginTop: "2rem" }}>
       <h2>📚 All Journal Entries</h2>
 
       {message && (
-        <div id="mood-message" style={{ marginBottom: "1rem" }}>
+        <div
+          id="mood-message"
+          style={{
+            marginBottom: "1rem",
+          }}
+        >
           {message}
         </div>
       )}
 
-      {entries.length === 0 ? (
-        <p
-          style={{
-            textAlign: "center",
-            padding: "3rem",
-            color: "#666",
-            fontFamily: "Courier New, monospace",
-            fontSize: "1.2rem",
-          }}
-        >
-          No entries yet. Start your journal! 📝
-        </p>
-      ) : (
-        <ul>
-          {entries.map((entry) => {
-            const isEditing = editingId === entry._id;
+      <div id="saved" className="history-full">
+        {loading ? (
+          <p className="empty-state">⏳ Loading...</p>
+        ) : entries.length === 0 ? (
+          <p className="empty-state">
+            No entries yet. Start your journal! 📝
+          </p>
+        ) : (
+          <ul>
+            {entries.map((entry) => (
+              <li key={entry._id}>
+                {editingId === entry._id ? (
+                  <div className="history-edit-form">
+                    <div className="history-edit-header">
+                      <strong>
+                        ✏️ Editing{" "}
+                        {new Date(entry.date).toLocaleDateString("en-US", {
+                          weekday: "short",
+                          month: "long",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </strong>
+                    </div>
 
-            return (
-              <li
-                key={entry._id}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "stretch",
-                  gap: "0.75rem",
-                  padding: "1rem 1.2rem",
-                  marginBottom: "1rem",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <span>
-                    {new Date(entry.date).toLocaleDateString("en-US", {
-                      weekday: "short",
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </span>
-
-                  <span style={{ fontSize: "2rem" }}>
-                    {moodEmoji[entry.mood]}
-                  </span>
-                </div>
-
-                {isEditing ? (
-                  <>
-                    <select
-                      value={editMood}
-                      onChange={(e) => setEditMood(e.target.value)}
-                      disabled={saving}
-                      className="uiverse-pixel-input"
-                    >
+                    <div className="history-mood-options">
                       {moods.map((mood) => (
-                        <option key={mood} value={mood}>
-                          {moodEmoji[mood]}{" "}
-                          {mood.charAt(0).toUpperCase() + mood.slice(1)}
-                        </option>
+                        <button
+                          key={mood.value}
+                          type="button"
+                          className={`history-mood-option ${
+                            editMood === mood.value ? "selected" : ""
+                          }`}
+                          onClick={() => setEditMood(mood.value)}
+                          title={mood.label}
+                        >
+                          {mood.emoji}
+                        </button>
                       ))}
-                    </select>
+                    </div>
 
                     <textarea
-                      className="uiverse-pixel-input"
+                      className="uiverse-pixel-input history-edit-input"
                       value={editNote}
                       onChange={(e) => setEditNote(e.target.value)}
                       maxLength={1000}
-                      rows={5}
-                      disabled={saving}
+                      placeholder="Update your journal entry..."
                     />
 
-                    <div style={{ display: "flex", gap: "0.75rem" }}>
+                    <div className="history-actions">
                       <button
-                        className="doodle-btn"
+                        className="history-edit-save"
+                        type="button"
                         onClick={() => saveEdit(entry._id)}
                         disabled={saving}
                       >
-                        {saving ? "⏳ Saving..." : "💾 Save"}
+                        {saving ? "⏳ Saving..." : "💾 Save Changes"}
                       </button>
 
                       <button
-                        className="doodle-btn"
+                        className="history-cancel-btn"
+                        type="button"
                         onClick={cancelEditing}
                         disabled={saving}
                       >
                         Cancel
                       </button>
                     </div>
-                  </>
+                  </div>
                 ) : (
                   <>
-                    <div
-                      style={{
-                        color: "#ffde59",
-                        fontFamily: "Courier New, monospace",
-                        fontSize: "0.95rem",
-                        width: "100%",
-                        padding: "0.5rem 0",
-                        whiteSpace: "pre-wrap",
-                      }}
-                    >
+                    <div className="entry-date">
+                      <span>
+                        {new Date(entry.date).toLocaleDateString("en-US", {
+                          weekday: "short",
+                          month: "long",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </span>
+
+                      <span className="entry-emoji">
+                        {moodEmoji[entry.mood] || "🙂"}
+                      </span>
+                    </div>
+
+                    <div className="entry-text">
                       {entry.note || "No journal note."}
                     </div>
 
-                    <div style={{ display: "flex", gap: "0.75rem" }}>
+                    <div className="history-actions">
                       <button
-                        className="doodle-btn"
+                        type="button"
+                        className="history-edit-btn"
                         onClick={() => startEditing(entry)}
                       >
                         ✏️ Edit
                       </button>
 
                       <button
-                        className="doodle-btn"
+                        type="button"
+                        className="history-delete-btn"
                         onClick={() => deleteEntry(entry._id)}
                       >
                         🗑️ Delete
@@ -269,10 +255,10 @@ export default function History() {
                   </>
                 )}
               </li>
-            );
-          })}
-        </ul>
-      )}
+            ))}
+          </ul>
+        )}
+      </div>
     </section>
   );
 }

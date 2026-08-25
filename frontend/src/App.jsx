@@ -126,8 +126,8 @@ function App() {
 
           <Routes>
             <Route path="/" element={<Landing />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
+           <Route path="/login" element={<Login setUser={setUser} />} />
+<Route path="/signup" element={<Signup setUser={setUser} />} />
             <Route
               path="/forgot-password"
               element={<ForgotPassword />}

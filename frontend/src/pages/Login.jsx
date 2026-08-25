@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { api } from "../services/api";
 
-export default function Login() {
+export default function Login({ setUser }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -18,10 +18,12 @@ export default function Login() {
   setMessageType("");
 
   try {
-    await api.login({
-      email,
-      password,
-    });
+    const response = await api.login({
+  email,
+  password,
+});
+
+setUser(response.user);
 
     setMessage("✅ Login successful!");
     setMessageType("success");
@@ -35,29 +37,7 @@ export default function Login() {
   }
 };
 
-  const handleResendVerification = async () => {
-    if (!email) {
-      setMessage('📧 Enter your email first!')
-      setMessageType('error')
-      return
-    }
-
-    setLoading(true)
-    
-
-    if (error) {
-      let friendlyError = '❌ ' + error.message
-      if (error.message.includes('rate limit')) {
-        friendlyError = '⏳ Please wait a few minutes before requesting another email.'
-      }
-      setMessage(friendlyError)
-      setMessageType('error')
-    } else {
-      setMessage('✅ Verification email resent! Check your inbox 📨')
-      setMessageType('success')
-    }
-    setLoading(false)
-  }
+ 
 
   return (
     <section id="home" style={{ maxWidth: '500px', margin: '2rem auto' }}>
@@ -107,18 +87,7 @@ export default function Login() {
           </Link>
         </div>
 
-        {message && (
-          <div 
-            id="mood-message" 
-            style={{ 
-              marginBottom: '1rem',
-              background: messageType === 'success' ? '#8ef0ce33' : '#ff6b3522',
-              borderColor: messageType === 'success' ? '#8ef0ce' : '#ff6b35'
-            }}
-          >
-            {message}
-          </div>
-        )}
+        
 
         {message?.includes('verify your email') && (
           <button 

@@ -11,7 +11,15 @@ export default function Dashboard({ user }) {
   const [saving, setSaving] = useState(false)
 const [userName, setUserName] = useState("");
   
+useEffect(() => {
 
+  if (user?.name) {
+
+    setUserName(user.name);
+
+  }
+
+}, [user]);
   // Update time every second
   useEffect(() => {
     const timer = setInterval(() => {

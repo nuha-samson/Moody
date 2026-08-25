@@ -9,7 +9,7 @@ import {
   deleteAllMoods,
 } from "../controllers/moodController.js";
 
-import protect from "../middleware/authMiddleware.js";
+import protect from "../middleware/authmiddleware.js";
 
 const router = express.Router();
 
@@ -21,4 +21,5 @@ router.post("/", createMood);
 router.put("/:id", updateMood);
 router.delete("/:id", deleteMood);
 router.delete("/", deleteAllMoods);
+
 export default router;
