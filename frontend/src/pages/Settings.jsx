@@ -46,9 +46,7 @@ export default function Settings() {
     setSaving(true)
     setMessage('')
 
-    const { error } = await supabase.auth.updateUser({
-      data: { username: name }
-    })
+    
 
     if (error) {
       setMessage('❌ ' + error.message)

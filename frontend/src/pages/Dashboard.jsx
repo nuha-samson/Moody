@@ -8,11 +8,9 @@ export default function Dashboard({ user }) {
   const [entries, setEntries] = useState([])
   const [currentTime, setCurrentTime] = useState(new Date())
   const [loading, setLoading] = useState(true)
-  const [userName, setUserName] = useState('')
   const [saving, setSaving] = useState(false)
-
-  // Get user name
-  const userName = user?.name || "Moody User";
+const [userName, setUserName] = useState("");
+  
 
   // Update time every second
   useEffect(() => {

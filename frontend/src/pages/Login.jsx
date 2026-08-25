@@ -43,10 +43,7 @@ export default function Login() {
     }
 
     setLoading(true)
-    const { error } = await supabase.auth.resend({
-      type: 'signup',
-      email: email,
-    })
+    
 
     if (error) {
       let friendlyError = '❌ ' + error.message

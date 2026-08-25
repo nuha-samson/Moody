@@ -10,24 +10,24 @@ const moodSchema = new mongoose.Schema(
     },
 
     mood: {
-  type: String,
-  required: [true, "Mood is required"],
-  enum: {
-    values: [
-      "happy",
-      "content",
-      "neutral",
-      "sad",
-      "very sad",
-      "excited",
-      "relaxed",
-      "tired",
-      "angry",
-      "overwhelmed",
-    ],
-    message: "Invalid mood",
-  },
-},
+      type: String,
+      required: [true, "Mood is required"],
+      enum: {
+        values: [
+          "happy",
+          "content",
+          "neutral",
+          "sad",
+          "very sad",
+          "excited",
+          "relaxed",
+          "tired",
+          "angry",
+          "overwhelmed",
+        ],
+        message: "Invalid mood",
+      },
+    },
 
     note: {
       type: String,
@@ -38,6 +38,12 @@ const moodSchema = new mongoose.Schema(
     date: {
       type: Date,
       default: Date.now,
+      required: true,
+    },
+
+    day: {
+      type: String,
+      required: true,
     },
   },
   {
@@ -45,7 +51,10 @@ const moodSchema = new mongoose.Schema(
   }
 );
 
-moodSchema.index({ user: 1, date: -1 });
+moodSchema.index(
+  { user: 1, day: 1 },
+  { unique: true }
+);
 
 const Mood = mongoose.model("Mood", moodSchema);
 
