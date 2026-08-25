@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { api } from "../services/api";
 
-export default function Dashboard() {
+export default function Dashboard({ user }) {
   const [selectedMood, setSelectedMood] = useState(null)
   const [journalText, setJournalText] = useState('')
   const [message, setMessage] = useState('')
@@ -12,17 +12,7 @@ export default function Dashboard() {
   const [saving, setSaving] = useState(false)
 
   // Get user name
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user?.user_metadata?.username) {
-        setUserName(user.user_metadata.username)
-      } else if (user?.email) {
-        setUserName(user.email.split('@')[0])
-      }
-    }
-    getUser()
-  }, [])
+  const userName = user?.name || "Moody User";
 
   // Update time every second
   useEffect(() => {
@@ -33,47 +23,38 @@ export default function Dashboard() {
   }, [])
 
   const loadEntries = async () => {
-    const { data, error } = await supabase
-      .from('journal_entries')
-      .select('*')
-      .order('created_at', { ascending: false })
+  try {
+    const response = await api.getMoods();
 
-    if (error) {
-      console.error('Error loading entries:', error)
-      setMessage('❌ Could not load your entries. Please refresh.')
-    } else {
-      setEntries(data || [])
-    }
+    setEntries(response.data || []);
+  } catch (error) {
+    console.error("Error loading entries:", error);
+
+    setMessage(
+      "❌ Could not load your entries. Please refresh."
+    );
   }
-
+};
   // Load entries
-  useEffect(() => {
-    let isActive = true
+ useEffect(() => {
+  const fetchEntries = async () => {
+    try {
+      const response = await api.getMoods();
 
-    const fetchEntries = async () => {
-      const { data, error } = await supabase
-        .from('journal_entries')
-        .select('*')
-        .order('created_at', { ascending: false })
+      setEntries(response.data || []);
+    } catch (error) {
+      console.error("Error loading entries:", error);
 
-      if (!isActive) return
-
-      if (error) {
-        console.error('Error loading entries:', error)
-        setMessage('❌ Could not load your entries. Please refresh.')
-      } else {
-        setEntries(data || [])
-      }
-
-      setLoading(false)
+      setMessage(
+        "❌ Could not load your entries. Please refresh."
+      );
+    } finally {
+      setLoading(false);
     }
+  };
 
-    void fetchEntries()
-
-    return () => {
-      isActive = false
-    }
-  }, [])
+  fetchEntries();
+}, []);
 
   const moods = [
     { emoji: '😊', label: 'Happy' },
@@ -87,66 +68,71 @@ export default function Dashboard() {
     { emoji: '😡', label: 'Angry' },
     { emoji: '🤯', label: 'Overwhelmed' }
   ]
+const saveEntry = async () => {
+  if (!selectedMood) {
+    setMessage("😅 Pick a mood first!");
 
-  const saveEntry = async () => {
-    if (!selectedMood) {
-      setMessage('😅 Pick a mood first!')
-      setTimeout(() => setMessage(''), 3000)
-      return
-    }
+    setTimeout(() => setMessage(""), 3000);
 
-    if (!journalText.trim()) {
-      setMessage('✍️ Write something!')
-      setTimeout(() => setMessage(''), 3000)
-      return
-    }
-
-    setSaving(true)
-    setMessage('⏳ Saving...')
-
-    const { data: { user } } = await supabase.auth.getUser()
-
-    const { error } = await supabase
-      .from('journal_entries')
-      .insert([
-        {
-          user_id: user.id,
-          mood_emoji: selectedMood.emoji,
-          mood_label: selectedMood.label,
-          content: journalText
-        }
-      ])
-      .select()
-
-    if (error) {
-      setMessage('❌ Error saving! Please try again.')
-      console.error('Save error:', error)
-    } else {
-      setMessage(`✨ Saved! ${selectedMood.emoji} "${journalText.slice(0, 30)}..."`)
-      setJournalText('')
-      setSelectedMood(null)
-      loadEntries()
-      setTimeout(() => setMessage(''), 3000)
-    }
-    setSaving(false)
+    return;
   }
+
+  if (!journalText.trim()) {
+    setMessage("✍️ Write something!");
+
+    setTimeout(() => setMessage(""), 3000);
+
+    return;
+  }
+
+  setSaving(true);
+  setMessage("⏳ Saving...");
+
+  try {
+    await api.createMood({
+      mood: selectedMood.label.toLowerCase(),
+      note: journalText.trim(),
+    });
+
+    setMessage(
+      `✨ Saved! ${selectedMood.emoji} "${journalText.slice(
+        0,
+        30
+      )}..."`
+    );
+
+    setJournalText("");
+    setSelectedMood(null);
+
+    await loadEntries();
+
+    setTimeout(() => setMessage(""), 3000);
+  } catch (error) {
+    setMessage(`❌ ${error.message}`);
+  } finally {
+    setSaving(false);
+  }
+};
 
   const deleteEntry = async (id) => {
-    if (!confirm('Delete this entry?')) return
-
-    const { error } = await supabase
-      .from('journal_entries')
-      .delete()
-      .eq('id', id)
-
-    if (error) {
-      setMessage('❌ Error deleting!')
-    } else {
-      setMessage('🗑️ Entry deleted!')
-      loadEntries()
-      setTimeout(() => setMessage(''), 2000)
-    }
+  if (!confirm("Delete this entry?")) {
+    return;
   }
+
+  try {
+    await api.deleteMood(id);
+
+    setEntries((currentEntries) =>
+      currentEntries.filter((entry) => entry._id !== id)
+    );
+
+    setMessage("🗑️ Entry deleted!");
+
+    setTimeout(() => setMessage(""), 2000);
+  } catch (error) {
+    setMessage(`❌ ${error.message}`);
+  }
+};
 
   // Get greeting with name
   const hour = new Date().getHours()

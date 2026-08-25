@@ -1,35 +1,47 @@
 import { useState, useEffect } from 'react'
-import { supabase } from '../supabase'
+import { api } from "../services/api";
 
 export default function History() {
   const [entries, setEntries] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    let isActive = true
+  let isActive = true;
 
-    const fetchEntries = async () => {
-      const { data, error } = await supabase
-        .from('journal_entries')
-        .select('*')
-        .order('created_at', { ascending: false })
+  const fetchEntries = async () => {
+    try {
+      const response = await api.getMoods();
 
-      if (!isActive) return
-
-      if (!error && data) {
-        setEntries(data)
+      if (isActive) {
+        setEntries(response.data || []);
       }
-
-      setLoading(false)
+    } catch (error) {
+      console.error("Error loading entries:", error);
+    } finally {
+      if (isActive) {
+        setLoading(false);
+      }
     }
+  };
 
-    void fetchEntries()
+  fetchEntries();
 
-    return () => {
-      isActive = false
-    }
-  }, [])
-
+  return () => {
+    isActive = false;
+  };
+}, []);
+const moodEmoji = {
+  happy: "😊",
+  content: "🙂",
+  neutral: "😐",
+  sad: "🙁",
+  "very sad": "😢",
+  excited: "😄",
+  relaxed: "😌",
+  tired: "😫",
+  angry: "😡",
+  overwhelmed: "🤯",
+};
   return (
     <section id="history" style={{ marginTop: '2rem' }}>
       <h2>📚 All Journal Entries</h2>
@@ -71,14 +83,16 @@ export default function History() {
                   alignItems: 'center'
                 }}>
                   <span>
-                    {new Date(entry.created_at).toLocaleDateString('en-US', {
+                    {new Date(entry.date).toLocaleDateString('en-US', {
                       weekday: 'short',
                       month: 'long',
                       day: 'numeric',
                       year: 'numeric'
                     })}
                   </span>
-                  <span style={{ fontSize: '2rem' }}>{entry.mood_emoji}</span>
+                 <span style={{ fontSize: "2rem" }}>
+  {moodEmoji[entry.mood] || "🙂"}
+</span>
                 </div>
                 <div style={{ 
                   color: '#ffde59',
@@ -87,7 +101,7 @@ export default function History() {
                   width: '100%',
                   padding: '0.5rem 0'
                 }}>
-                  {entry.content}
+                  {entry.note}
                 </div>
               </li>
             ))}

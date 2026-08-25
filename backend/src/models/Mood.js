@@ -10,21 +10,24 @@ const moodSchema = new mongoose.Schema(
     },
 
     mood: {
-      type: String,
-      required: [true, "Mood is required"],
-      enum: {
-        values: [
-          "happy",
-          "sad",
-          "angry",
-          "anxious",
-          "calm",
-          "excited",
-          "neutral",
-        ],
-        message: "Invalid mood",
-      },
-    },
+  type: String,
+  required: [true, "Mood is required"],
+  enum: {
+    values: [
+      "happy",
+      "content",
+      "neutral",
+      "sad",
+      "very sad",
+      "excited",
+      "relaxed",
+      "tired",
+      "angry",
+      "overwhelmed",
+    ],
+    message: "Invalid mood",
+  },
+},
 
     note: {
       type: String,

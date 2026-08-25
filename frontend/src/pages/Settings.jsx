@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../supabase'
+import { api } from "../services/api";
 
 export default function Settings() {
   const [name, setName] = useState('')
@@ -11,37 +11,30 @@ export default function Settings() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    let isActive = true
+  let isActive = true;
 
-    const loadData = async () => {
-      const [{ data: { user } }, { data, error }] = await Promise.all([
-        supabase.auth.getUser(),
-        supabase
-          .from('journal_entries')
-          .select('*')
-      ])
+  const loadData = async () => {
+    try {
+      const response = await api.getMoods();
 
-      if (!isActive) return
-
-      if (user?.user_metadata?.username) {
-        setName(user.user_metadata.username)
-      } else if (user?.email) {
-        setName(user.email.split('@')[0])
+      if (isActive) {
+        setEntryCount(response.data?.length || 0);
       }
-
-      if (!error && data) {
-        setEntryCount(data.length)
+    } catch (error) {
+      console.error("Failed to load settings:", error);
+    } finally {
+      if (isActive) {
+        setLoading(false);
       }
-
-      setLoading(false)
     }
+  };
 
-    void loadData()
+  loadData();
 
-    return () => {
-      isActive = false
-    }
-  }, [])
+  return () => {
+    isActive = false;
+  };
+}, []);
 
   const handleUpdateName = async () => {
     if (!name.trim()) {
@@ -68,27 +61,30 @@ export default function Settings() {
   }
 
   const handleClear = async () => {
-    if (confirm('⚠️ Delete ALL entries? This cannot be undone!')) {
-      const { error } = await supabase
-        .from('journal_entries')
-        .delete()
-        .neq('id', 0)
-
-      if (error) {
-        alert('❌ Error deleting entries!')
-      } else {
-        alert('✅ All entries deleted!')
-        setEntryCount(0)
-        window.location.reload()
-      }
-    }
+  if (!confirm("⚠️ Delete ALL entries? This cannot be undone!")) {
+    return;
   }
+
+  try {
+    await api.deleteAllMoods();
+
+    setEntryCount(0);
+
+    alert("✅ All entries deleted!");
+  } catch (error) {
+    alert(`❌ ${error.message}`);
+  }
+};
 
   const handleLogout = async () => {
-    await supabase.auth.signOut()
-    navigate('/login')
-  }
+  try {
+    await api.logout();
 
+    navigate("/login");
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
+};
   if (loading) {
     return (
       <section id="home" style={{ marginTop: '2rem', textAlign: 'center', padding: '3rem' }}>

@@ -68,7 +68,14 @@ export const createMood = async (req, res, next) => {
 
 export const updateMood = async (req, res, next) => {
   try {
-    const { mood, note, date } = req.body;
+    const { mood, note } = req.body;
+
+    if (!mood) {
+      return res.status(400).json({
+        success: false,
+        message: "Mood is required",
+      });
+    }
 
     const updatedMood = await Mood.findOneAndUpdate(
       {
@@ -78,7 +85,6 @@ export const updateMood = async (req, res, next) => {
       {
         mood,
         note,
-        date,
       },
       {
         new: true,
@@ -101,6 +107,7 @@ export const updateMood = async (req, res, next) => {
     next(error);
   }
 };
+
 
 export const deleteMood = async (req, res, next) => {
   try {
