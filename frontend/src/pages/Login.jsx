@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { supabase } from '../supabase'
+import { api } from "../services/api";
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -11,36 +11,29 @@ export default function Login() {
   const navigate = useNavigate()
 
   const handleLogin = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setMessage('')
-    setMessageType('')
+  e.preventDefault();
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    })
+  setLoading(true);
+  setMessage("");
+  setMessageType("");
 
-    if (error) {
-      let friendlyError = '❌ ' + error.message
-      
-      if (error.message.includes('Email not confirmed')) {
-        friendlyError = '📧 Please verify your email first! Check your inbox 📨'
-      } else if (error.message.includes('Invalid login credentials')) {
-        friendlyError = '🔐 Wrong email or password. Try again?'
-      } else if (error.message.includes('rate limit')) {
-        friendlyError = '⏳ Too many attempts. Please wait a few minutes.'
-      }
-      
-      setMessage(friendlyError)
-      setMessageType('error')
-      setLoading(false)
-    } else {
-      setMessage('✅ Welcome back! 🎉')
-      setMessageType('success')
-      setTimeout(() => navigate('/'), 1000)
-    }
+  try {
+    await api.login({
+      email,
+      password,
+    });
+
+    setMessage("✅ Login successful!");
+    setMessageType("success");
+
+    navigate("/");
+  } catch (error) {
+    setMessage(`❌ ${error.message}`);
+    setMessageType("error");
+  } finally {
+    setLoading(false);
   }
+};
 
   const handleResendVerification = async () => {
     if (!email) {

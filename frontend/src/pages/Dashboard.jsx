@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { supabase } from '../supabase'
+import { api } from "../services/api";
 
 export default function Dashboard() {
   const [selectedMood, setSelectedMood] = useState(null)

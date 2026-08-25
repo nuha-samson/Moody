@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { supabase } from '../supabase'
+import { api } from "../services/api";
 
 export default function Signup() {
   const [email, setEmail] = useState('')
@@ -12,67 +12,30 @@ export default function Signup() {
   const navigate = useNavigate()
 
   const handleSignup = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setMessage('')
-    setMessageType('')
+  e.preventDefault();
 
-    if (!email || !email.includes('@')) {
-      setMessage('📧 Please enter a valid email')
-      setMessageType('error')
-      setLoading(false)
-      return
-    }
+  setLoading(true);
+  setMessage("");
+  setMessageType("");
 
-    if (password.length < 6) {
-      setMessage('🔐 Password must be at least 6 characters')
-      setMessageType('error')
-      setLoading(false)
-      return
-    }
+  try {
+    await api.signup({
+      name: username,
+      email,
+      password,
+    });
 
-    try {
-      console.log('📤 Signing up:', email)
+    setMessage("✅ Account created successfully!");
+    setMessageType("success");
 
-      // SIMPLEST POSSIBLE SIGNUP - no extra options
-      const { data, error } = await supabase.auth.signUp({
-        email: email,
-        password: password,
-      })
-
-      console.log('📥 Response:', { data, error })
-
-      if (error) {
-        let msg = error.message || 'Unknown error'
-        if (msg.includes('User already registered')) {
-          msg = 'This email is already registered. Please login.'
-        } else if (msg.includes('rate limit')) {
-          msg = 'Too many attempts. Please wait a few minutes.'
-        }
-        setMessage('❌ ' + msg)
-        setMessageType('error')
-        setLoading(false)
-        return
-      }
-
-      if (data?.user) {
-        setMessage('✅ Account created! 🎉 You can now login.')
-        setMessageType('success')
-        setLoading(false)
-        setTimeout(() => navigate('/login'), 2000)
-      } else {
-        setMessage('❌ Something went wrong. Please try again.')
-        setMessageType('error')
-        setLoading(false)
-      }
-
-    } catch (err) {
-      console.error('Error:', err)
-      setMessage('❌ Network error. Please try again.')
-      setMessageType('error')
-      setLoading(false)
-    }
+    navigate("/");
+  } catch (error) {
+    setMessage(`❌ ${error.message}`);
+    setMessageType("error");
+  } finally {
+    setLoading(false);
   }
+};
 
   return (
     <section id="home" style={{ maxWidth: '500px', margin: '2rem auto' }}>
