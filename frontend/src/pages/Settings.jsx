@@ -38,7 +38,7 @@ export default function Settings() {
 
   const handleUpdateName = async () => {
     if (!name.trim()) {
-      setMessage('❌ Name cannot be empty!')
+      setMessage(' Name cannot be empty!')
       setTimeout(() => setMessage(''), 3000)
       return
     }
@@ -49,9 +49,9 @@ export default function Settings() {
     
 
     if (error) {
-      setMessage('❌ ' + error.message)
+      setMessage(' something went wrong: ' + error.message)
     } else {
-      setMessage('✅ Name updated successfully!')
+      setMessage(' Name updated successfully!')
       // Refresh the page to show new name
       setTimeout(() => window.location.reload(), 1500)
     }
@@ -68,9 +68,9 @@ export default function Settings() {
 
     setEntryCount(0);
 
-    alert("✅ All entries deleted!");
+    setMessage(' All entries deleted!')
   } catch (error) {
-    alert(`❌ ${error.message}`);
+    setMessage(` something went wrong: ${error.message}`);
   }
 };
 
@@ -93,7 +93,7 @@ export default function Settings() {
 
   return (
     <section id="home" style={{ marginTop: '2rem' }}>
-      <h2>⚙️ Settings</h2>
+      <h2> Settings</h2>
 
       <div style={{ 
         padding: '1.5rem',
@@ -101,7 +101,7 @@ export default function Settings() {
         marginBottom: '1.5rem',
         background: '#fcf9f2'
       }}>
-        <h3 style={{ marginBottom: '1rem' }}>👤 Profile</h3>
+        <h3 style={{ marginBottom: '1rem' }}> Profile</h3>
         <div className="uiverse-pixel-input-wrapper">
           <label className="uiverse-pixel-label">Your Name</label>
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
@@ -122,7 +122,7 @@ export default function Settings() {
               onClick={handleUpdateName}
               disabled={saving}
             >
-              {saving ? '⏳ Saving...' : '💾 Save Name'}
+              {saving ? ' Saving...' : ' Save Name'}
             </button>
           </div>
         </div>
@@ -139,7 +139,7 @@ export default function Settings() {
         marginBottom: '1.5rem',
         background: '#fcf9f2'
       }}>
-        <h3 style={{ marginBottom: '1rem' }}>📊 Statistics</h3>
+        <h3 style={{ marginBottom: '1rem' }}> Statistics</h3>
         <p style={{ fontFamily: 'Courier New, monospace', fontSize: '1.2rem' }}>
           Total Journal Entries: {entryCount}
         </p>
@@ -170,7 +170,7 @@ export default function Settings() {
         border: '4px solid #1a1a1a',
         background: '#fcf9f2'
       }}>
-        <h3 style={{ marginBottom: '1rem' }}>🚪 Account</h3>
+        <h3 style={{ marginBottom: '1rem' }}> Account</h3>
         <button 
           className="doodle-btn" 
           style={{ 
@@ -182,7 +182,7 @@ export default function Settings() {
           }}
           onClick={handleLogout}
         >
-          🚪 Logout
+           Logout
         </button>
       </div>
     </section>

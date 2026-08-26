@@ -27,12 +27,12 @@ export default function Signup({ setUser }) {
 
 setUser(response.user);
 
-    setMessage("✅ Account created successfully!");
+    setMessage(" Account created successfully!");
     setMessageType("success");
 
     navigate("/");
   } catch (error) {
-    setMessage(`❌ ${error.message}`);
+    setMessage(` something went wrong: ${error.message}`);
     setMessageType("error");
   } finally {
     setLoading(false);
@@ -42,7 +42,7 @@ setUser(response.user);
   return (
     <section id="home" style={{ maxWidth: '500px', margin: '2rem auto' }}>
       <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-        <span style={{ fontSize: '4rem' }}>🌱</span>
+        <span style={{ fontSize: '4rem' }}></span>
       </div>
       <h2>Create Your Account</h2>
       <p style={{ 
@@ -56,7 +56,7 @@ setUser(response.user);
       
       <form onSubmit={handleSignup} style={{ padding: '1rem 0' }}>
         <div className="uiverse-pixel-input-wrapper" style={{ marginBottom: '1.5rem' }}>
-          <label className="uiverse-pixel-label">👤 Your Name</label>
+          <label className="uiverse-pixel-label"> Your Name</label>
           <input 
             className="uiverse-pixel-input"
             style={{ height: '50px' }}
@@ -68,7 +68,7 @@ setUser(response.user);
         </div>
 
         <div className="uiverse-pixel-input-wrapper" style={{ marginBottom: '1.5rem' }}>
-          <label className="uiverse-pixel-label">📧 Email Address</label>
+          <label className="uiverse-pixel-label"> Email Address</label>
           <input 
             className="uiverse-pixel-input"
             style={{ height: '50px' }}
@@ -81,7 +81,7 @@ setUser(response.user);
         </div>
 
         <div className="uiverse-pixel-input-wrapper" style={{ marginBottom: '0.5rem' }}>
-          <label className="uiverse-pixel-label">🔐 Password</label>
+          <label className="uiverse-pixel-label"> Password</label>
           <input 
             className="uiverse-pixel-input"
             style={{ height: '50px' }}

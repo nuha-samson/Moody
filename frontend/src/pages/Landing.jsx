@@ -29,7 +29,7 @@ export default function Landing() {
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link to="/signup">
             <button className="doodle-btn" style={{ fontSize: '1.3rem', padding: '18px 40px' }}>
-              🌱 Start Your Journey
+               Start Your Journey
             </button>
           </Link>
           <Link to="/login">
@@ -38,7 +38,7 @@ export default function Landing() {
               padding: '18px 40px',
               background: '#f0ebe3'
             }}>
-              🔐 I Have an Account
+               I Have an Account
             </button>
           </Link>
         </div>
@@ -46,7 +46,7 @@ export default function Landing() {
 
       {/* Features Section */}
       <section id="home" style={{ marginTop: '2rem', padding: '3rem 2rem' }}>
-        <h2 style={{ textAlign: 'center' }}>✨ How It Works</h2>
+        <h2 style={{ textAlign: 'center' }}> How To Use</h2>
         
         <div style={{ 
           display: 'grid', 
@@ -60,7 +60,7 @@ export default function Landing() {
             background: '#fcf9f2',
             textAlign: 'center'
           }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>😊</div>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}></div>
             <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Pick Your Mood</h3>
             <p style={{ color: '#666', fontFamily: 'Courier New, monospace' }}>
               Choose from 10 moods. How are you really feeling?
@@ -73,10 +73,10 @@ export default function Landing() {
             background: '#fcf9f2',
             textAlign: 'center'
           }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📝</div>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}></div>
             <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Write It Down</h3>
             <p style={{ color: '#666', fontFamily: 'Courier New, monospace' }}>
-              No judgment. Just honest words about your day.
+              Just honest words about your day. how you felt, what happened, or anything on your mind.
             </p>
           </div>
 
@@ -86,7 +86,7 @@ export default function Landing() {
             background: '#fcf9f2',
             textAlign: 'center'
           }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📈</div>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}></div>
             <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>See Your Growth</h3>
             <p style={{ color: '#666', fontFamily: 'Courier New, monospace' }}>
               Watch your emotional journey unfold over time.
@@ -97,7 +97,7 @@ export default function Landing() {
 
       {/* Stats Section */}
       <section id="home" style={{ marginTop: '2rem', padding: '3rem 2rem' }}>
-        <h2 style={{ textAlign: 'center' }}>🌟 Join the Moody Community</h2>
+        <h2 style={{ textAlign: 'center' }}> Join the Moody Community</h2>
         
         <div style={{ 
           display: 'grid', 

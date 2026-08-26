@@ -25,12 +25,12 @@ export default function Login({ setUser }) {
 
 setUser(response.user);
 
-    setMessage("✅ Login successful!");
+    setMessage(" Login successful!");
     setMessageType("success");
 
     navigate("/");
   } catch (error) {
-    setMessage(`❌ ${error.message}`);
+    setMessage(` something went wrong: ${error.message}`);
     setMessageType("error");
   } finally {
     setLoading(false);
@@ -44,7 +44,7 @@ setUser(response.user);
       <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
         <span style={{ fontSize: '4rem' }}>🌱</span>
       </div>
-      <h2>🔐 Welcome Back</h2>
+      <h2> Welcome Back</h2>
       <p style={{ 
         textAlign: 'center', 
         color: '#666', 
@@ -56,7 +56,7 @@ setUser(response.user);
       
       <form onSubmit={handleLogin} style={{ padding: '1rem 0' }}>
         <div className="uiverse-pixel-input-wrapper" style={{ marginBottom: '1.5rem' }}>
-          <label className="uiverse-pixel-label">📧 Email</label>
+          <label className="uiverse-pixel-label"> Email</label>
           <input 
             className="uiverse-pixel-input"
             style={{ height: '50px' }}
@@ -69,7 +69,7 @@ setUser(response.user);
         </div>
 
         <div className="uiverse-pixel-input-wrapper" style={{ marginBottom: '0.5rem' }}>
-          <label className="uiverse-pixel-label">🔐 Password</label>
+          <label className="uiverse-pixel-label"> Password</label>
           <input 
             className="uiverse-pixel-input"
             style={{ height: '50px' }}
@@ -106,7 +106,7 @@ setUser(response.user);
             }}
             disabled={loading}
           >
-            {loading ? '⏳ Sending...' : '🔄 Resend verification email'}
+            {loading ? ' Sending...' : ' Resend verification email'}
           </button>
         )}
 
@@ -116,7 +116,7 @@ setUser(response.user);
           style={{ width: '100%', justifyContent: 'center' }}
           disabled={loading}
         >
-          {loading ? '⏳ Logging in...' : '🚀 Let\'s Go!'}
+          {loading ? ' Logging in...' : '🚀 Let\'s Go!'}
         </button>
 
         <p style={{ 

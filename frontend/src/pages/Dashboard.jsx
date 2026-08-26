@@ -64,12 +64,12 @@ useEffect(() => {
 
   const moods = [
     { emoji: '😊', label: 'Happy' },
-    { emoji: '🙂', label: 'Content' },
-    { emoji: '😐', label: 'Neutral' },
-    { emoji: '🙁', label: 'Sad' },
-    { emoji: '😢', label: 'Very Sad' },
     { emoji: '😄', label: 'Excited' },
     { emoji: '😌', label: 'Relaxed' },
+    { emoji: '🙂', label: 'Content' },
+    { emoji: '😐', label: 'Neutral' },  
+    { emoji: '🙁', label: 'Sad' },
+    { emoji: '😢', label: 'Very Sad' },
     { emoji: '😫', label: 'Tired' },
     { emoji: '😡', label: 'Angry' },
     { emoji: '🤯', label: 'Overwhelmed' }
@@ -114,7 +114,7 @@ const saveEntry = async () => {
 
     setTimeout(() => setMessage(""), 3000);
   } catch (error) {
-    setMessage(`❌ ${error.message}`);
+    setMessage(` something went wrong could not save entry: ${error.message}`);
   } finally {
     setSaving(false);
   }
@@ -136,7 +136,7 @@ const saveEntry = async () => {
 
     setTimeout(() => setMessage(""), 2000);
   } catch (error) {
-    setMessage(`❌ ${error.message}`);
+    setMessage(` something went wrong could not delete entry: ${error.message}`);
   }
 };
 
@@ -185,7 +185,7 @@ const saveEntry = async () => {
         <div id="write">
           <div className="uiverse-pixel-input-wrapper">
             <label className="uiverse-pixel-label">
-              📝 Write your thoughts...
+               Write your thoughts...
               {selectedMood && (
                 <span style={{ marginLeft: '10px', color: '#8ef0ce' }}>
                   ({selectedMood.emoji} {selectedMood.label})
@@ -234,7 +234,7 @@ const saveEntry = async () => {
         )}
 
         <div id="history">
-          <h2>📖 Recent Journal Entries</h2>
+          <h2> Recent Journal Entries</h2>
           <div id="saved">
             {loading ? (
               <p style={{ 
@@ -252,7 +252,7 @@ const saveEntry = async () => {
                 color: '#666',
                 fontFamily: 'Courier New, monospace'
               }}>
-                No entries yet. Start writing! 📝
+                No entries yet. Start writing! 
               </p>
             ) : (
               <ul>

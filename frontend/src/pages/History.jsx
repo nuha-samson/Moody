@@ -49,7 +49,7 @@ export default function History() {
         }
       } catch (error) {
         console.error("Error loading entries:", error);
-        setMessage(`❌ ${error.message}`);
+        setMessage(` something went wrong could not load entries: ${error.message}`);
       } finally {
         if (isActive) {
           setLoading(false);
@@ -79,12 +79,12 @@ export default function History() {
 
   const saveEdit = async (id) => {
     if (!editMood) {
-      setMessage("😅 Pick a mood first!");
+      setMessage(" Pick a mood first!");
       return;
     }
 
     if (!editNote.trim()) {
-      setMessage("✍️ Write something!");
+      setMessage(" Write something!");
       return;
     }
 
@@ -103,10 +103,10 @@ export default function History() {
         )
       );
 
-      setMessage("✅ Entry updated successfully!");
+      setMessage(" Entry updated successfully!");
       cancelEditing();
     } catch (error) {
-      setMessage(`❌ ${error.message}`);
+      setMessage(` something went wrong could not update entry: ${error.message}`);
     } finally {
       setSaving(false);
     }
@@ -124,15 +124,15 @@ export default function History() {
         currentEntries.filter((entry) => entry._id !== id)
       );
 
-      setMessage("🗑️ Entry deleted!");
+      setMessage(" Entry deleted!");
     } catch (error) {
-      setMessage(`❌ ${error.message}`);
+      setMessage(` something went wrong could not delete entry: ${error.message}`);
     }
   };
 
   return (
     <section id="history" style={{ marginTop: "2rem" }}>
-      <h2>📚 All Journal Entries</h2>
+      <h2> My Journal Entries</h2>
 
       {message && (
         <div
@@ -150,7 +150,7 @@ export default function History() {
           <p className="empty-state">⏳ Loading...</p>
         ) : entries.length === 0 ? (
           <p className="empty-state">
-            No entries yet. Start your journal! 📝
+            No entries yet. Start your journal! 
           </p>
         ) : (
           <ul>
@@ -160,7 +160,7 @@ export default function History() {
                   <div className="history-edit-form">
                     <div className="history-edit-header">
                       <strong>
-                        ✏️ Editing{" "}
+                         Editing{" "}
                         {new Date(entry.date).toLocaleDateString("en-US", {
                           weekday: "short",
                           month: "long",
@@ -241,7 +241,7 @@ export default function History() {
                         className="history-edit-btn"
                         onClick={() => startEditing(entry)}
                       >
-                        ✏️ Edit
+                         Edit
                       </button>
 
                       <button
@@ -249,7 +249,7 @@ export default function History() {
                         className="history-delete-btn"
                         onClick={() => deleteEntry(entry._id)}
                       >
-                        🗑️ Delete
+                         Delete
                       </button>
                     </div>
                   </>
