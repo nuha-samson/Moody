@@ -63,12 +63,12 @@ useEffect(() => {
 }, []);
 
   const moods = [
-    { emoji: '😊', label: 'Happy' },
-    { emoji: '😄', label: 'Excited' },
-    { emoji: '😌', label: 'Relaxed' },
-    { emoji: '🙂', label: 'Content' },
-    { emoji: '😐', label: 'Neutral' },  
-    { emoji: '🙁', label: 'Sad' },
+    { emoji: '😊', label: 'happy' },
+    { emoji: '😄', label: 'excited' },
+    { emoji: '😌', label: 'relaxed' },
+    { emoji: '🙂', label: 'content' },
+    { emoji: '😐', label: 'neutral' },  
+    { emoji: '🙁', label: 'sad' },
     { emoji: '😢', label: 'Very Sad' },
     { emoji: '😫', label: 'Tired' },
     { emoji: '😡', label: 'Angry' },
@@ -145,7 +145,22 @@ const saveEntry = async () => {
   let greeting = 'Morning'
   if (hour >= 12 && hour < 17) greeting = 'Afternoon'
   if (hour >= 17) greeting = 'Evening'
+const getMoodEmoji = (mood) => {
+  const moodMap = {
+    happy: '😊',
+    content: '🙂',
+    neutral: '😐',
+    sad: '😢',
+    'very sad': '😭',
+    excited: '🤩',
+    relaxed: '😌',
+    tired: '😫',
+    angry: '😡',
+    overwhelmed: '🤯',
+  };
 
+  return moodMap[mood] || '😐';
+};
   return (
     <div>
       <section id="home">
@@ -257,32 +272,38 @@ const saveEntry = async () => {
             ) : (
               <ul>
                 {entries.slice(0, 10).map((entry) => (
-                  <li key={entry.id}>
-                    <span>
-                      {new Date(entry.created_at).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric'
-                      })}
-                    </span>
-                    <span>{entry.mood_emoji}</span>
-                    <span>
-                      {entry.content.slice(0, 40)}
-                      {entry.content.length > 40 ? '...' : ''}
-                    </span>
-                    <button 
-                      onClick={() => deleteEntry(entry.id)}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        color: '#ff6b35',
-                        cursor: 'pointer',
-                        fontSize: '1.2rem',
-                        padding: '0 10px'
-                      }}
-                    >
-                      ✕
-                    </button>
-                  </li>
+              
+<li key={entry._id}>
+  <span>
+    {new Date(entry.createdAt).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric'
+    })}
+  </span>
+
+  <span>
+    {getMoodEmoji(entry.mood)}
+  </span>
+
+  <span>
+    {(entry.note || '').slice(0, 40)}
+    {(entry.note || '').length > 40 ? '...' : ''}
+  </span>
+
+  <button
+    onClick={() => deleteEntry(entry._id)}
+    style={{
+      background: 'none',
+      border: 'none',
+      color: '#ff6b35',
+      cursor: 'pointer',
+      fontSize: '1.2rem',
+      padding: '0 10px'
+    }}
+  >
+    ✕
+  </button>
+</li>
                 ))}
               </ul>
             )}

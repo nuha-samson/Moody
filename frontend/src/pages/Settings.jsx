@@ -94,13 +94,14 @@ export default function Settings() {
   return (
     <section id="home" style={{ marginTop: '2rem' }}>
       <h2> Settings</h2>
-
+{/**
       <div style={{ 
         padding: '1.5rem',
         border: '4px solid #1a1a1a',
         marginBottom: '1.5rem',
         background: '#fcf9f2'
       }}>
+         
         <h3 style={{ marginBottom: '1rem' }}> Profile</h3>
         <div className="uiverse-pixel-input-wrapper">
           <label className="uiverse-pixel-label">Your Name</label>
@@ -132,7 +133,7 @@ export default function Settings() {
           </div>
         )}
       </div>
-
+*/}
       <div style={{ 
         padding: '1.5rem',
         border: '4px solid #1a1a1a',
