@@ -4,15 +4,13 @@ dotenv.config();
 import app from "./src/app.js";
 import connectDB from "./src/config/db.js";
 
-
-
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
     await connectDB();
 
-    app.listen(PORT, () => {
+    app.listen(PORT, "0.0.0.0", () => {
       console.log(`Moody API running on port ${PORT}`);
     });
   } catch (error) {
@@ -22,4 +20,3 @@ const startServer = async () => {
 };
 
 startServer();
-
