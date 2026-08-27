@@ -147,7 +147,7 @@ export default function History() {
 
       <div id="saved" className="history-full">
         {loading ? (
-          <p className="empty-state">⏳ Loading...</p>
+          <p className="empty-state"> Loading...</p>
         ) : entries.length === 0 ? (
           <p className="empty-state">
             No entries yet. Start your journal! 

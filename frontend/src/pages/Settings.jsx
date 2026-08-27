@@ -86,7 +86,7 @@ export default function Settings() {
   if (loading) {
     return (
       <section id="home" style={{ marginTop: '2rem', textAlign: 'center', padding: '3rem' }}>
-        <h2>⏳ Loading...</h2>
+        <h2> Loading...</h2>
       </section>
     )
   }

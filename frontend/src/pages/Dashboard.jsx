@@ -37,7 +37,7 @@ useEffect(() => {
     console.error("Error loading entries:", error);
 
     setMessage(
-      "❌ Could not load your entries. Please refresh."
+      " Could not load your entries. Please refresh."
     );
   }
 };
@@ -52,7 +52,7 @@ useEffect(() => {
       console.error("Error loading entries:", error);
 
       setMessage(
-        "❌ Could not load your entries. Please refresh."
+        "Could not load your entries. Please refresh."
       );
     } finally {
       setLoading(false);
@@ -258,7 +258,7 @@ const getMoodEmoji = (mood) => {
                 color: '#666',
                 fontFamily: 'Courier New, monospace'
               }}>
-                ⏳ Loading your entries...
+                Loading your entries...
               </p>
             ) : entries.length === 0 ? (
               <p style={{ 
