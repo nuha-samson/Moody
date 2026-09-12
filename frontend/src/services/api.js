@@ -1,4 +1,4 @@
-const API_URL = 'https://moody-1-uyac.onrender.com'
+const API_URL = 'https://moody-1-uyac.onrender.com/api'
 const request = async (endpoint, options = {}) => {
   const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,
