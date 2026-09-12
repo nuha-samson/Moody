@@ -12,18 +12,31 @@ import {
 
 const app = express();
 
-const allowedOrigin = ["https://vercel.app", "http://localhost:5173"];
+// Authorized URLs allowed to communicate with this backend
+const allowedOrigins = [
+  "https://mood-ie.vercel.app", // Your brand new live Vercel URL
+  "http://localhost:5173"        // Keeps your local development working
+];
 
 app.use(
   cors({
-    origin: allowedOrigin,
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps, postman, curl)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"]
   })
 );
 
-
+// Express 5 compatible route handler for browser preflight safety checks
 app.options("*any", (req, res) => {
   res.sendStatus(200);
 });
